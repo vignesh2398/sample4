@@ -1,7 +1,9 @@
 const express = require('express');
 const { hashing, hashcompare } = require('../Function/PasswordHashing');
 const { User } = require('../Models/User');
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { Repo } = require('../Models/Reposchema');
+const { verifys } = require('../Function/Verify');
 const router =express.Router();
 const Token="sdfsdfsdf"
 router.get("/",async(req,res)=>{
@@ -68,5 +70,48 @@ router.post('/login',async(req,res)=>{
     }
  
 })
+
+
+router.post('/repo',verifys,async(req,res)=>{
+    //const RepoExist1 = await Repo.findOne({RepoName:req.body.RepoName})
+     const email = req.header("email")
+     const RepoExist = await User.findOne({email:email}).populate("repo")
+     if(RepoExist)
+     var fil= RepoExist.repo;
+     
+     //var result = await fil.filter(fils=>{ return (fils.RepoName == req.body.RepoName)} )
+    
+     const hasMatch= fil.filter(fils=>{
+       return(fils.RepoName== req.body.RepoName)
+     }).length>0;
+          
+   
+     try {
+       if(!hasMatch)
+       { 
+         const email= req.header("email");
+         const user = await User.findOne({email:email})
+         req.body.RepoOwner=user._id    
+   
+     const repo= await Repo.create(req.body)
+     const update= await User.findById({_id:user._id})
+     const updateuser = await User.findByIdAndUpdate({_id:user._id},{$push:{"repo":repo._id}})
+     
+     //const data= await attendnce.findByIdAndUpdate({_id:req.body._id},{$push:{"atte":{Login:req.body.Login,Logout:req.body.Logout}}})
+     res.status(200).send({message:`Repo ${req.body.RepoName} Created`,success:true})
+     const user1 = await User.findOne({email:email})
+   
+       }
+       else{
+         res.status(200).send({message:`Try another reponame ${req.body.RepoName} already  exist`})
+       }
+     } catch (error) {
+       res.status(400).send({success:false})
+       
+     }
+   
+   })
+
+
 
 module.exports = router;
