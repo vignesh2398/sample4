@@ -1,15 +1,13 @@
 const jwt = require("jsonwebtoken")
-
+const Token="sdfsdfsdf"
 var verifys = async(req, res, next)=>{
     try {
        
         var token=req.header("auth-token");
         var email=req.header("email");
-       var verified = jwt.verify(token, process.env.Token);
+       var verified = jwt.verify(token, Token);
        
-        console.log(email==verified.email)
-        console.log("jkj",verified)
-        console.log("uyui",email)
+
         if(email==verified.email)
         {
 
