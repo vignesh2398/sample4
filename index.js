@@ -6,6 +6,7 @@ const mongoose=require('mongoose');
 const dotenv=require('dotenv');
 const router = require('./Router/routes');
 const routers = require('./Router/routes2');
+const routers3 = require('./Router/routes3');
 dotenv.config();
 const app=express();
  app.use(express.json())
@@ -15,6 +16,7 @@ const app=express();
 // app.use('/',router)
 app.use('/',router)
 app.use('/user',routers)
+app.use('/repo',routers3)
  //MongoDB url
  const URI=process.env.MONGO_URL
  
