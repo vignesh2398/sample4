@@ -25,10 +25,12 @@ router.post('/Create',async(req, res)=> {
        let hashedPassword=await hashing(req.body.password)
        req.body.password=hashedPassword
        const user= await User.create(req.body)
-       res.status(200).send(user)
+       res.status(200).send({
+        success:true,message:"user created"
+       })
      }
     } catch (error) {
-     res.status(400).send(error.details)
+     res.status(200).send(error.details)
     }
    });
 
